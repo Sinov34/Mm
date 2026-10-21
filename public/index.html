@@ -906,8 +906,19 @@ const PZ = { x:0, y:0, k:1, vp:$("vp"), st:$("stage"), dragged:false,
   const end = e => { if (!pts.has(e.pointerId)) return; pts.delete(e.pointerId); PZ.vp.classList.remove("dragging"); start = pts.size ? snap() : null; };
   window.addEventListener("pointerup", end); window.addEventListener("pointercancel", end);
   PZ.vp.addEventListener("click", e => { if (PZ.dragged){ e.stopPropagation(); e.preventDefault(); PZ.dragged = false; } }, true);
-  PZ.vp.addEventListener("wheel", e => { e.preventDefault(); const r = PZ.vp.getBoundingClientRect();
-    PZ.zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top); }, {passive:false});
+  // Two-finger swipe / mouse wheel pans the tree; pinch (ctrl+wheel) or Cmd/Ctrl+wheel zooms (the "lupa").
+  PZ.vp.addEventListener("wheel", e => {
+    e.preventDefault(); const r = PZ.vp.getBoundingClientRect();
+    if (e.ctrlKey || e.metaKey){ PZ.zoomAt(Math.exp(-Math.max(-30, Math.min(30, e.deltaY)) * 0.01), e.clientX - r.left, e.clientY - r.top); return; }
+    const m = e.deltaMode === 1 ? 18 : e.deltaMode === 2 ? PZ.vp.clientHeight : 1;
+    let dx = e.deltaX * m, dy = e.deltaY * m;
+    if (e.shiftKey && !dx){ dx = dy; dy = 0; }
+    PZ.x -= dx; PZ.y -= dy; PZ.apply();
+  }, {passive:false});
+  // Safari pinch arrives as gesture events
+  let gs = 1;
+  PZ.vp.addEventListener("gesturestart", e => { e.preventDefault(); gs = 1; }, {passive:false});
+  PZ.vp.addEventListener("gesturechange", e => { e.preventDefault(); const r = PZ.vp.getBoundingClientRect(); PZ.zoomAt(e.scale / gs, e.clientX - r.left, e.clientY - r.top); gs = e.scale; }, {passive:false});
   $("zIn").onclick = () => PZ.zoomAt(1.25, PZ.vp.clientWidth/2, PZ.vp.clientHeight/2);
   $("zOut").onclick = () => PZ.zoomAt(0.8, PZ.vp.clientWidth/2, PZ.vp.clientHeight/2);
   $("zFit").onclick = () => PZ.fit(true);
