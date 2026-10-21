@@ -71,6 +71,6 @@ head = '''<!doctype html>
 </head>
 <body>
 '''
-out = head + src.replace('url("fonts/', 'url("/fonts/').replace('fetch("fonts/', 'fetch("/fonts/') + "\n</body>\n</html>\n"
+out = head + src.replace('url("img/', 'url("/img/').replace('url("fonts/', 'url("/fonts/').replace('fetch("fonts/', 'fetch("/fonts/') + "\n</body>\n</html>\n"
 (root / "public" / "index.html").write_text(out, encoding="utf-8")
 print("public/index.html:", len(out), "bytes")

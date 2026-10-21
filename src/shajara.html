@@ -14,7 +14,7 @@
   --man:#5E86AE; --man-soft:#E6EEF6; --woman:#C47C86; --woman-soft:#F7E6E6; --branch:#B8954F;
   --lapis:#2B5A86; --lapis-soft:#E2EAF3; --teal:#2F7A6E; --teal-soft:#DDEEEA; --danger:#B3261E;
   --sky1:#E9EEE8; --sky2:#F6EEDC; --mount1:#C9D3CF; --mount2:#B4C2BE; --dome:#5D8FA0; --dome2:#C8A86A; --leaf1:#6E8B4E; --leaf2:#93A866; --leaf3:#4F6E3C; --bark:#6C5137;
-  --shadow:0 18px 40px -20px rgba(52,40,20,.45); --shadow-s:0 6px 16px -8px rgba(52,40,20,.35);
+  --scene-filter:none; --shadow:0 18px 40px -20px rgba(52,40,20,.45); --shadow-s:0 6px 16px -8px rgba(52,40,20,.35);
   --serif:"Alegreya",Georgia,"Times New Roman",serif;
   --sans:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
@@ -24,14 +24,14 @@
   --man:#86A9D4; --man-soft:#1C2A42; --woman:#DC9AA3; --woman-soft:#3A2129; --branch:#B9975A;
   --lapis:#9DB8E8; --lapis-soft:#1D2A48; --teal:#6CC8BA; --teal-soft:#123430; --danger:#F2867E;
   --sky1:#0B1426; --sky2:#1A2540; --mount1:#1B2740; --mount2:#22304C; --dome:#2E5866; --dome2:#8E7543; --leaf1:#2E4A33; --leaf2:#3B5A3B; --leaf3:#24392A; --bark:#3A2C22;
-  --shadow:0 18px 40px -18px rgba(0,0,0,.75); --shadow-s:0 6px 16px -8px rgba(0,0,0,.6); color-scheme:dark}}
+  --scene-filter:brightness(.42) saturate(.75) hue-rotate(-8deg); --shadow:0 18px 40px -18px rgba(0,0,0,.75); --shadow-s:0 6px 16px -8px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#0C1220; --panel:#131C2E; --card:#18233A; --sunk:#111A2B; --ink:#EEE8DA; --muted:#A3AABB; --line:#26324B;
   --green:#2F6E55; --green-ink:#F3EEDF; --green-soft:#183328; --gold:#D9B46A; --gold-btn:#C79C4E; --gold-soft:#3A2F18;
   --man:#86A9D4; --man-soft:#1C2A42; --woman:#DC9AA3; --woman-soft:#3A2129; --branch:#B9975A;
   --lapis:#9DB8E8; --lapis-soft:#1D2A48; --teal:#6CC8BA; --teal-soft:#123430; --danger:#F2867E;
   --sky1:#0B1426; --sky2:#1A2540; --mount1:#1B2740; --mount2:#22304C; --dome:#2E5866; --dome2:#8E7543; --leaf1:#2E4A33; --leaf2:#3B5A3B; --leaf3:#24392A; --bark:#3A2C22;
-  --shadow:0 18px 40px -18px rgba(0,0,0,.75); --shadow-s:0 6px 16px -8px rgba(0,0,0,.6); color-scheme:dark}
+  --scene-filter:brightness(.42) saturate(.75) hue-rotate(-8deg); --shadow:0 18px 40px -18px rgba(0,0,0,.75); --shadow-s:0 6px 16px -8px rgba(0,0,0,.6); color-scheme:dark}
 
 html,body{height:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -83,16 +83,26 @@ button{cursor:pointer}
 
 /* ---------- Canvas with painted scene ---------- */
 .canvas{position:relative;min-height:0;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,var(--sky1),var(--sky2) 70%);box-shadow:var(--shadow-s)}
-.scene{position:absolute;inset:0;pointer-events:none}
-.scene canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
-.scene svg{position:absolute;left:0;bottom:0;width:100%;height:46%}
+.scene{position:absolute;inset:0;pointer-events:none;background:url("img/tree.jpg") center 62%/cover no-repeat;filter:var(--scene-filter)}
+.scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 30%,transparent),color-mix(in srgb,var(--panel) 6%,transparent) 40%,color-mix(in srgb,var(--panel) 22%,transparent))}
+.tbtn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;font-weight:500;font-size:14.5px;border:1px solid var(--line)}
+.tbtn[aria-pressed="true"]{background:var(--green);color:var(--green-ink);border-color:var(--green)}
+.pager{position:absolute;z-index:20;left:50%;transform:translateX(-50%);bottom:16px;display:flex;align-items:center;gap:6px;padding:5px;max-width:calc(100% - 24px);box-sizing:border-box}
+.pager button{width:44px;height:44px;border:0;border-radius:11px;background:var(--green);color:var(--green-ink);display:grid;place-items:center;flex:none}
+.pager button:disabled{background:var(--sunk);color:var(--muted);cursor:default}
+.pg-t{display:grid;text-align:center;min-width:0;padding:0 10px}
+.pg-t b{font-family:var(--serif);font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pg-t small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menu-btn{display:none}
+.scrim{display:none}
+.side-more{display:flex;flex-direction:column;gap:18px;flex:1;min-height:0}
 .viewport{position:absolute;inset:0;touch-action:none;cursor:grab}
 .viewport.dragging{cursor:grabbing}
 .stage{position:absolute;left:0;top:0;transform-origin:0 0}
 .topbar{position:absolute;z-index:20;top:12px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;pointer-events:none}
 .topbar>*{pointer-events:auto}
 .pill{background:color-mix(in srgb,var(--card) 94%,transparent);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-s);backdrop-filter:blur(6px)}
-.search{position:relative;flex:0 1 330px;min-width:0}
+.search{position:relative;flex:0 1 270px;min-width:0}
 .search input{width:100%;border:0;background:transparent;padding:10px 64px 10px 40px;box-sizing:border-box;font-size:15px;border-radius:14px}
 .search>svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
 .kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:1px 7px;background:var(--sunk);pointer-events:none}
@@ -308,37 +318,63 @@ tbody tr:hover td{background:var(--sunk)}
 .progress i{display:block;height:100%;background:var(--gold);width:0;transition:width .2s}
 .toast{position:fixed;z-index:80;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);background:var(--ink);color:var(--panel);padding:12px 18px;border-radius:14px;box-shadow:var(--shadow);max-width:calc(100% - 32px);font-size:15px;box-sizing:border-box}
 
-/* ---------- Narrow screens ---------- */
-@media (max-width:980px){
-  .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:auto;min-height:100%;gap:10px;padding-block:10px}
-  .side{flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:12px 14px;border-radius:20px;overflow:visible}
-  .brand{grid-template-columns:auto 1fr;justify-items:start;text-align:left;gap:2px 10px;flex:1 1 220px;min-width:0}
-  .brand .mark{grid-row:span 2;width:40px;height:40px}
-  .brand h1{font-size:22px}
-  .title-row{justify-content:flex-start}
-  .nav{grid-template-columns:1fr 1fr;width:100%;order:3}
-  .nav button{padding:8px 12px;font-size:14.5px}
-  .orn,.statcard{display:none}
-  .side-foot{margin-top:0;display:flex;flex-wrap:wrap;gap:8px;order:4;width:100%}
-  .side-foot .me-chip{flex:1 1 180px;width:auto}
-  .side-foot>button{flex:0 0 auto}
-  .canvas{height:78vh;min-height:520px}
-  .grid2,.grid3,.ex-grid{grid-template-columns:1fr}
-  .sheet{position:fixed;top:auto;left:0;right:0;bottom:0;width:auto;max-height:86%;border-radius:24px 24px 0 0;border-bottom:0;
-    padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* ---------- Phones & small tablets ---------- */
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);gap:8px;height:100%;
+    padding-block:8px calc(76px + env(safe-area-inset-bottom,0px));padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+  .side{display:contents}
+  .brand{grid-column:1;grid-row:1;display:flex;align-items:center;gap:10px;text-align:left;min-width:0;padding:4px 6px}
+  .brand .mark{width:34px;height:34px}
+  .title-row{min-width:0;justify-content:flex-start}
+  .brand h1{font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand p{display:none}
+  .title-input{font-size:18px}
+  .menu-btn{grid-column:2;grid-row:1;display:grid;place-items:center;position:relative;width:46px;height:46px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink);box-shadow:var(--shadow-s)}
+  .menu-dot{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--gold)}
+  .canvas{grid-column:1 / -1;grid-row:2;border-radius:20px}
+  .nav{position:fixed;z-index:50;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -8px 24px -16px rgba(0,0,0,.35);
+    padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+  .nav button{flex-direction:column;gap:3px;padding:7px 2px;border-radius:12px;font-size:11.5px;font-weight:500;text-align:center;justify-content:center;line-height:1.15}
+  .nav button[hidden]{display:none}
+  .nav button[aria-pressed="true"]{box-shadow:none}
+  .nav:has(#exportBtn[hidden]){grid-template-columns:repeat(3,1fr)}
+  .side-more{position:fixed;z-index:70;top:0;right:0;bottom:0;width:min(330px,86vw);box-sizing:border-box;background:var(--panel);border-left:1px solid var(--line);box-shadow:var(--shadow);
+    padding:calc(env(safe-area-inset-top,0px) + 20px) max(18px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 20px) 18px;overflow:auto;
+    transform:translateX(105%);transition:transform .22s ease;visibility:hidden}
+  .app.menu-open .side-more{transform:none;visibility:visible}
+  .scrim{display:block;position:fixed;inset:0;z-index:65;background:color-mix(in srgb,#0B0905 45%,transparent)}
+  .scrim[hidden]{display:none}
+  .orn{display:none}
+  .side-foot{margin-top:auto}
+  .topbar{top:8px;left:8px;right:8px;gap:6px}
   .search{flex:1 1 100%}
+  .search input{padding-block:9px}
+  .kbd{display:none}
   .tb-spacer{display:none}
-  .legend{display:none}
-  .field-inline>span{display:none}
-  .sel{max-width:170px}
-  .zoom output{display:none}
-  .topbar{gap:6px}
-  #pickWrap{flex:1 1 0;min-width:0}
+  #pickWrap{flex:1 1 0;min-width:0;padding-left:10px}
   #pickWrap .sel{max-width:none;width:100%}
+  .field-inline>span{display:none}
+  .zoom #zIn,.zoom #zOut,.zoom output{display:none}
+  .tbtn span{display:none}
+  .tbtn{padding:9px 11px}
   #addBtn{padding:9px 12px}
   #addBtn span{display:none}
-  .nav button{padding:7px 11px}
+  .legend{display:none}
+  .pager{bottom:10px;left:8px;right:8px;transform:none;max-width:none}
+  .pg-t{flex:1}
+  .pg-t b{font-size:15.5px}
+  .listview{padding-top:70px}
+  .sheet{position:fixed;z-index:60;top:auto;left:0;right:0;bottom:0;width:auto;max-height:88%;border-radius:24px 24px 0 0;border-bottom:0;
+    padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .portrait{width:120px;height:120px}
+  .pname{font-size:24px}
+  .grid2,.grid3,.ex-grid{grid-template-columns:1fr}
+  .form{padding:18px;border-radius:20px}
+  .form h2{font-size:25px}
+  .tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+@media (max-width:900px) and (max-height:520px){ .app{padding-bottom:66px} .nav button span{display:none} }
+@media (max-width:640px){ .scene{background-image:url("img/tree-sm.jpg")} }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -355,7 +391,7 @@ tbody tr:hover td{background:var(--sunk)}
 </svg>
 
 <div class="app">
-  <aside class="side">
+  <aside class="side" id="side">
     <div class="brand">
       <svg class="mark" aria-hidden="true"><use href="#treeMark"/></svg>
       <div class="title-row" id="titleRow"><h1 id="title">Oila shajarasi</h1>
@@ -363,46 +399,27 @@ tbody tr:hover td{background:var(--sunk)}
       </div>
       <p id="stats">&nbsp;</p>
     </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menyu" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="menu-dot" id="menuDot" hidden></span></button>
     <nav class="nav" aria-label="Bo'limlar">
       <button id="vTree" aria-pressed="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V11M12 15l-4-3M12 13l4-3"/><path d="M7 10a5 5 0 0 1 10 0 3.5 3.5 0 0 1-2 6.3H9A3.5 3.5 0 0 1 7 10z"/></svg><span data-t="viewTree"></span></button>
       <button id="vFan" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M3 12h6M15 12h6M12 3v6"/></svg><span data-t="viewFan"></span></button>
       <button id="vList" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c2.5 0 4 1.5 4.5 4"/></svg><span data-t="viewList"></span></button>
       <button id="exportBtn" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11v6M9 14l3 3 3-3"/></svg><span data-t="exportBtn"></span></button>
     </nav>
-    <div class="orn" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 48 48"><use href="#star"/></svg></div>
-    <div class="statcard"><svg aria-hidden="true"><use href="#treeMark"/></svg><div><small data-t="genCount"></small><b id="genN">–</b><span id="pplN"></span></div></div>
-    <button class="todaybtn" id="todayBtn" hidden></button>
-    <div class="seg" role="group" aria-label="Yozuv"><button id="scLat" aria-pressed="true">Lotin</button><button id="scCyr" aria-pressed="false">Кирилл</button></div>
-    <div class="side-foot">
-      <button class="me-chip" id="meChip" hidden></button>
+    <div class="side-more" id="sideMore">
+      <div class="orn" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 48 48"><use href="#star"/></svg></div>
+      <div class="statcard"><svg aria-hidden="true"><use href="#treeMark"/></svg><div><small data-t="genCount"></small><b id="genN">–</b><span id="pplN"></span></div></div>
+      <button class="todaybtn" id="todayBtn" hidden></button>
+      <div class="seg" role="group" aria-label="Yozuv"><button id="scLat" aria-pressed="true">Lotin</button><button id="scCyr" aria-pressed="false">Кирилл</button></div>
+      <div class="side-foot">
+        <button class="me-chip" id="meChip" hidden></button>
+      </div>
     </div>
   </aside>
+  <div class="scrim" id="scrim" hidden></div>
 
   <main class="canvas">
-    <div class="scene" aria-hidden="true">
-      <canvas id="treeBg"></canvas>
-      <svg viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice">
-        <path d="M0 250 L120 170 L210 215 L330 120 L450 200 L560 150 L690 230 L820 140 L950 210 L1080 160 L1200 220 V420 H0Z" style="fill:var(--mount1)" opacity=".75"/>
-        <path d="M0 300 L160 230 L300 280 L420 220 L560 290 L720 240 L880 300 L1040 250 L1200 290 V420 H0Z" style="fill:var(--mount2)" opacity=".7"/>
-        <g opacity=".85">
-          <rect x="40" y="300" width="190" height="120" style="fill:var(--dome2)" opacity=".55"/>
-          <path d="M95 300a40 40 0 0 1 80 0z" style="fill:var(--dome)"/>
-          <rect x="128" y="250" width="14" height="14" style="fill:var(--dome2)"/>
-          <rect x="60" y="250" width="16" height="170" style="fill:var(--dome2)" opacity=".8"/>
-          <rect x="194" y="250" width="16" height="170" style="fill:var(--dome2)" opacity=".8"/>
-          <path d="M60 250h16l-8-14zM194 250h16l-8-14z" style="fill:var(--dome)"/>
-          <path d="M110 420v-70a25 25 0 0 1 50 0v70z" style="fill:var(--mount2)"/>
-          <path d="M990 330a34 34 0 0 1 68 0z" style="fill:var(--dome)"/>
-          <rect x="980" y="330" width="88" height="90" style="fill:var(--dome2)" opacity=".5"/>
-          <rect x="1090" y="280" width="12" height="140" style="fill:var(--dome2)" opacity=".7"/>
-          <path d="M1090 280h12l-6-12z" style="fill:var(--dome)"/>
-        </g>
-        <rect x="0" y="392" width="1200" height="28" style="fill:var(--sky2)" opacity=".9"/>
-        <g style="fill:var(--mount2)" opacity=".6">
-          <rect x="0" y="388" width="1200" height="6"/>
-        </g>
-      </svg>
-    </div>
+    <div class="scene" aria-hidden="true"></div>
     <div class="viewport" id="vp"><div class="stage" id="stage"></div></div>
     <div class="listview" id="list" hidden></div>
     <div class="topbar">
@@ -418,8 +435,14 @@ tbody tr:hover td{background:var(--sunk)}
         <button id="zIn" aria-label="Kattalashtirish"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg></button>
         <button id="zFit" aria-label="Butun daraxt"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
       </div>
+      <button class="pill tbtn" id="pageMode" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg><span id="pageModeT"></span></button>
       <div class="tb-spacer"></div>
       <button class="btn gold" id="addBtn" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg><span data-t="add"></span></button>
+    </div>
+    <div class="pager pill" id="pager" hidden>
+      <button id="pgPrev" aria-label="Oldingi shox"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="pg-t"><b id="pgTitle"></b><small id="pgSub"></small></div>
+      <button id="pgNext" aria-label="Keyingi shox"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
     </div>
     <div class="state" id="state"><div class="box"><svg class="mark" aria-hidden="true"><use href="#treeMark"/></svg><p data-t="loading"></p></div></div>
     <div class="legend" id="legend" hidden>
@@ -537,7 +560,7 @@ const tRaw = k => { const s = L[k] || k; return S.script === "cyr" ? s.replace(/
 Object.assign(L, { viewTree:"Shajara daraxti", viewFan:"Doira ko'rinishi", viewList:"Oila a'zolari", genCount:"Avlodlar soni",
   add:"Yangi a'zo qo'shish", search:"Oila a'zolarini qidirish…", tabInfo:"Ma'lumot", tabRel:"Qarindoshlar", inlaws:"Qayin tomoni",
   bioT:"Qisqacha ma'lumot", meRole:"Shajarada siz", meNone:"Kartochkada «Bu — men»", pplOf:"{n} kishi", noRel:"Qarindoshlar hali kiritilmagan.",
-  todayDates:"Bugungi sanalar", root:"Avlod boshi" });
+  todayDates:"Bugungi sanalar", root:"Avlod boshi", pagedOn:"Shoxlar bo'yicha", pagedOff:"Butun daraxt", branchOf:"{n} shoxi", pageOf:"{i} / {n}", menu:"Menyu" });
 const MONTHS = ["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
 
 /* ================= Helpers ================= */
@@ -624,6 +647,7 @@ function morph(w, p){
   const m = w.match(/^(.*?)([^ \-]+)$/), pre = m[1], last = m[2];
   const ex = { "o'g'il":["o'g'lingiz","o'g'li"], "singil":["singlingiz","singlisi"] };
   if (ex[last]) return pre + ex[last][p === 2 ? 0 : 1];
+  for (const k of Object.keys(ex)) if (last.endsWith(k)) return pre + last.slice(0, -k.length) + ex[k][p === 2 ? 0 : 1];
   const v = /[aeiou]$/i.test(last); return pre + last + (p === 2 ? (v ? "ngiz" : "ingiz") : (v ? "si" : "i"));
 }
 function chainParts(b){
@@ -656,26 +680,38 @@ function bloodTerm(b){
   if (a === 2 && n === 2) return G(myPar) === "m" ? (G(rPar) === "m" ? "amakivachcha" : "ammavachcha") : (G(rPar) === "m" ? "tog'avachcha" : "xolavachcha");
   return null;
 }
+const lc1 = s => s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+const wc = s => s.trim().split(/\s+/).length;
+const plain = s => s.replace(/ \(.*\)$/, "");
+function shortBlood(b, mode, d = 0){
+  const P2 = mode === "you" ? 2 : 3, n = b.lb.length - 1, r = b.r, cands = [chainText(chainParts(b), mode)];
+  if (d > 2) return cands[0];
+  for (let j = 1; j < n; j++){ const X = b.lb[j], bx = blood(b.me, X), tx = bx && bloodTerm(bx); if (tx && tx !== "siz") cands.push(morph(plain(tx), P2) + "ning " + morph(descT(n - j, G(r)), 3)); }
+  for (let i = 1; i < b.a; i++){ const A = b.la[b.a - i], b2 = blood(A, r); if (!b2) continue; const t2 = bloodTerm(b2);
+    cands.push(morph(ancT(i, G(A)), P2) + "ning " + (t2 ? morph(plain(t2), 3) : shortBlood(b2, "third", d + 1))); }
+  return cands.reduce((best, c) => wc(c) < wc(best) ? c : best);
+}
 function relate(meId, rId, mode = "you"){
   const me = P(meId), r = P(rId); if (!me || !r) return null;
   if (meId === rId) return { term: mode === "you" ? "Siz" : "O'zi", desc:null };
   const A = ancMap(meId), bl = blood(meId, rId, A);
   if (bl){
     const tm = bloodTerm(bl), parts = chainParts(bl), ch = chainText(parts, mode), n = bl.lb.length - 1;
-    let desc = tm && parts.length > 1 ? capF(ch) : null;
+    if (!tm){ const sh = shortBlood(bl, mode); return { term: capF(sh), desc: wc(sh) < wc(ch) ? capF(ch) : null }; }
+    let desc = parts.length > 1 ? capF(ch) : null;
     if (n === 0 && bl.a >= 2) desc = capF(ch) + " · " + (G(bl.la[bl.a - 1]) === "m" ? "ota tomondan" : "ona tomondan");
     if (bl.a === 1 && n === 1) desc = null;
     return { term: capF(tm || ch), desc };
   }
   const f = G(rId) === "f", Y = mode === "you";
-  const SP = Y ? "turmush o'rtog'ingizning " : "turmush o'rtog'ining ";
+  const spOf = s => G(s) === "m" ? (Y ? "eringizning " : "erining ") : (Y ? "xotiningizning " : "xotinining ");
   if ((me.spouses||[]).includes(rId)) return { term:"Turmush o'rtog'i", desc: f ? (Y ? "Xotiningiz" : "Xotini") : (Y ? "Eringiz" : "Eri") };
   // r is the spouse of one of my blood relatives
   let best = null;
   for (const x of r.spouses||[]){ if (x === meId || !P(x)) continue; const b = blood(meId, x, A); if (b && (!best || b.s < best.b.s)) best = { x, b }; }
   if (best){
     const { a } = best.b, n = best.b.lb.length - 1, tx = bloodTerm(best.b), xs = f ? "xotini" : "eri";
-    const via = capF((tx ? morph(tx.replace(/ \(.*\)$/, ""), Y ? 2 : 3) : chainText(chainParts(best.b), mode)) + "ning " + xs);
+    const via = capF((tx ? morph(plain(tx), Y ? 2 : 3) : shortBlood(best.b, mode)) + "ning " + xs);
     if (a === 0 && n === 1) return { term: f ? "Kelin" : "Kuyov", desc: via };
     if (a === 0 && n === 2) return { term: f ? "Nabira kelin" : "Nabira kuyov", desc: via };
     if (a === 1 && n === 1) return { term: f ? "Yanga" : "Pochcha", desc: via };
@@ -686,7 +722,7 @@ function relate(meId, rId, mode = "you"){
   let sb = null;
   for (const s of me.spouses||[]){ if (!P(s)) continue; const b = blood(s, rId); if (b && (!sb || b.s < sb.b.s)) sb = { s, b }; }
   if (sb){
-    const { a } = sb.b, n = sb.b.lb.length - 1;
+    const { a } = sb.b, n = sb.b.lb.length - 1, SP = spOf(sb.s);
     const via = capF(SP + chainText(chainParts(sb.b), "third"));
     if (a === 1 && n === 0) return { term: f ? "Qaynona" : "Qaynota", desc: via };
     if (a === 2 && n === 0) return { term: f ? "Qayin buvi" : "Qayin bobo", desc: via };
@@ -694,14 +730,17 @@ function relate(meId, rId, mode = "you"){
       return { term: f ? (o < 0 ? "Qayinopa" : o > 0 ? "Qayinsingil" : "Qayinopa / qayinsingil") : (o < 0 ? "Qaynog'a" : o > 0 ? "Qayni" : "Qaynog'a / qayni"), desc: via }; }
     if (a === 1 && n === 2) return { term:"Jiyan", desc: via };
     if (a === 0 && n === 1) return { term: f ? "O'gay qiz" : "O'gay o'g'il", desc: via };
-    const tx = bloodTerm(sb.b);
-    return { term: capF(SP + (tx ? morph(tx.replace(/ \(.*\)$/, ""), 3) : chainText(chainParts(sb.b), "third"))), desc:null };
+    const tx = bloodTerm(sb.b), cands = [SP + (tx ? morph(plain(tx), 3) : shortBlood(sb.b, "third"))];
+    for (let j = 1; j < n; j++){ const X = sb.b.lb[j], rx = relate(meId, X, mode);
+      if (rx && wc(rx.term) <= 2 && !/ning\b/.test(rx.term)) cands.push(morph(lc1(rx.term.split(" / ")[0]), Y ? 2 : 3) + "ning " + morph(descT(n - j, G(rId)), 3)); }
+    const best2 = cands.reduce((b0, c) => wc(c) < wc(b0) ? c : b0), full2 = SP + chainText(chainParts(sb.b), "third");
+    return { term: capF(best2), desc: best2 !== full2 ? capF(full2) : null };
   }
   // r is married to my spouse's sibling: boja / ovsin
   for (const x of r.spouses||[]) for (const s of me.spouses||[]){
     if (!P(x) || !P(s) || x === meId) continue;
     const b = blood(s, x); if (!b || b.a !== 1 || b.lb.length - 1 !== 1) continue;
-    const via = capF(SP + morph(sibT(x, s), 3) + "ning " + (f ? "xotini" : "eri"));
+    const via = capF(spOf(s) + morph(sibT(x, s), 3) + "ning " + (f ? "xotini" : "eri"));
     const meF = G(meId) === "f";
     if (meF && f) return { term:"Ovsin", desc: via };
     if (!meF && !f) return { term:"Boja", desc: via };
@@ -837,10 +876,57 @@ const PZ = { x:0, y:0, k:1, vp:$("vp"), st:$("stage"), dragged:false,
 
 /* ================= Tree view ================= */
 const TD = { w:166, h:192, coupleGap:62, gap:26, rowGap:96, knotY:58, busStep:10 };
+function unitKids(id){ const p = P(id), m = new Map(); if (!p) return []; for (const x of [p, ...spousesOf(p)]) for (const k of kidsOf(x.id)) m.set(k.id, k); return [...m.values()].sort((a,b) => bKey(a) - bKey(b)); }
+function treePages(){
+  if (!P(S.rootId)) return [];
+  const vw = PZ.vp.clientWidth || 1000, maxW = Math.max(560, (vw - 40) / (vw < 600 ? 0.6 : 0.8));
+  const memo = new Map(), wOf = id => { if (!memo.has(id)) memo.set(id, layoutTree(id, TD).W); return memo.get(id); };
+  const out = [];
+  (function split(id, path, depth){
+    const kids = unitKids(id);
+    if (wOf(id) <= maxW || !kids.length || depth > 8){ out.push({ ids:[id], path }); return; }
+    let cur = null, curW = 0;
+    for (const k of kids){
+      const w = wOf(k.id);
+      if (w > maxW){ if (cur){ out.push(cur); cur = null; } split(k.id, [...path, id], depth + 1); continue; }
+      if (cur && curW + TD.gap * 3 + w <= maxW){ cur.ids.push(k.id); curW += TD.gap * 3 + w; }
+      else { if (cur) out.push(cur); cur = { ids:[k.id], path:[...path, id] }; curW = w; }
+    }
+    if (cur) out.push(cur);
+  })(S.rootId, [], 0);
+  return out;
+}
+function pageOfPerson(pages, id){
+  for (let i = 0; i < pages.length; i++) for (const r of pages[i].ids){ if (layoutTree(r, TD).nodes.some(n => n.id === id)) return i; }
+  return -1;
+}
 function renderTree(){
   if (!P(S.rootId)){ const f = founders()[0]; S.rootId = f ? f.id : null; }
   if (!S.rootId){ PZ.st.innerHTML = ""; return; }
-  const Lt = layoutTree(S.rootId, TD), padL = 60, pad = 76, W = Lt.W + padL + pad, H = Lt.H + pad * 2;
+  const pages = treePages(), canPage = pages.length > 1;
+  S._pages = pages;
+  if (!canPage) S.paged = false;
+  $("pageMode").hidden = !canPage;
+  $("pageMode").setAttribute("aria-pressed", !!S.paged);
+  $("pageModeT").textContent = t(S.paged ? "pagedOff" : "pagedOn");
+  let roots = [S.rootId], depth0 = 0;
+  if (S.paged){
+    S.page = Math.max(0, Math.min(S.page || 0, pages.length - 1));
+    const pg = pages[S.page]; roots = pg.ids; depth0 = pg.path.length;
+    $("pgTitle").textContent = t("branchOf", { n: pg.ids.map(id => first(P(id))).join(", ") }) + " · " + t("pageOf", { i: S.page + 1, n: pages.length });
+    $("pgSub").textContent = pg.path.map(id => first(P(id))).join(" › ") || "\u00a0";
+    $("pgPrev").disabled = S.page === 0; $("pgNext").disabled = S.page === pages.length - 1;
+  }
+  $("pager").hidden = !S.paged || S.view !== "tree";
+  const parts = []; let xoff = 0, maxD = 0;
+  for (const r of roots){ const L1 = layoutTree(r, TD); parts.push({ L1, dx: xoff }); xoff += L1.W + TD.gap * 3; maxD = Math.max(maxD, L1.maxDepth); }
+  const Lt = { W: Math.max(0, xoff - TD.gap * 3), H: (maxD + 1) * TD.h + maxD * TD.rowGap, maxDepth: maxD, nodes: [], families: [], marriages: [] };
+  for (const { L1, dx } of parts){
+    L1.nodes.forEach(n => Lt.nodes.push({ ...n, x: n.x + dx }));
+    L1.families.forEach(f => Lt.families.push({ ...f, ax: f.ax + dx, kids: f.kids.map(k => ({ ...k, x: k.x + dx })) }));
+    L1.marriages.forEach(m => Lt.marriages.push({ ...m, x1: m.x1 + dx, x2: m.x2 + dx, kx: m.kx + dx }));
+  }
+  const padL = 60, pad = 76, W = Lt.W + padL + pad, H = Lt.H + pad * 2 + (S.paged ? 60 : 0);
   let svg = `<svg class="links" width="${W}" height="${H}" viewBox="${-padL} ${-pad} ${W} ${H}">`;
   for (const f of Lt.families) svg += `<path class="ln" d="${linkPath(f, 16)}"/>`;
   for (const m of Lt.marriages){
@@ -850,8 +936,8 @@ function renderTree(){
   svg += "</svg>";
   let gens = "";
   const depths = [...new Set(Lt.nodes.map(n => n.depth))];
-  const root = Lt.nodes.find(n => n.id === S.rootId), axis = (root ? root.x + TD.w / 2 : Lt.W / 2) + padL;
-  for (const d of depths) gens += `<div class="gen" style="left:${axis}px;top:${d * (TD.h + TD.rowGap) + pad - TD.rowGap / 2 - 13}px">${esc((ROMAN[d] || d + 1) + "-" + t("gen").toUpperCase())}</div>`;
+  const anchor = Lt.nodes.find(n => roots.includes(n.id)), axis = roots.length === 1 && anchor ? anchor.x + TD.w / 2 + padL : Lt.W / 2 + padL;
+  for (const d of depths) gens += `<div class="gen" style="left:${axis}px;top:${d * (TD.h + TD.rowGap) + pad - TD.rowGap / 2 - 13}px">${esc((ROMAN[d + depth0] || d + depth0 + 1) + "-" + t("gen").toUpperCase())}</div>`;
   let cards = "";
   for (const n of Lt.nodes){
     const p = P(n.id), rel = relOf(n.id);
@@ -990,6 +1076,8 @@ function renderChrome(){
   $("todayBtn").hidden = !today;
   if (today) $("todayBtn").innerHTML = `<span class="today-dot">${today}</span>${esc(t("todayDates"))}`;
   $("legend").hidden = S.view !== "fan" || !n;
+  if (S.view !== "tree"){ $("pager").hidden = true; $("pageMode").hidden = true; }
+  $("menuDot").hidden = !(S.loaded && upcoming(0).length);
   $("zoom").hidden = S.view === "list" || !n;
   $("pickWrap").hidden = !n || S.view === "list";
   $("pickLbl").textContent = t(S.view === "tree" ? "root" : "center");
@@ -1017,7 +1105,7 @@ function render(fit){
   $("vp").hidden = S.view === "list"; $("list").hidden = S.view !== "list";
   if (S.view === "tree") renderTree(); else if (S.view === "fan") renderFan(); else renderList();
   if (S.view !== "list"){
-    const key = S.view + ":" + (S.view === "tree" ? S.rootId : S.focusId);
+    const key = S.view + ":" + (S.view === "tree" ? S.rootId + (S.paged ? ":p" + S.page : "") : S.focusId);
     if (fit || S.fittedFor !== key){ S.fittedFor = key; requestAnimationFrame(() => PZ.fit()); }
   }
   renderSheet();
@@ -1121,6 +1209,7 @@ function select(id, locateIt){ S.selId = id; if (S.view === "list") renderSheet(
 function locate(id){
   requestAnimationFrame(() => {
     let el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    if (!el && S.view === "tree" && S.paged){ const pi = pageOfPerson(S._pages || [], id); if (pi >= 0){ S.page = pi; render(true); el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); } }
     if (!el && S.view === "tree"){ S.rootId = topOf(id); render(); el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); }
     if (!el && S.view === "fan"){ S.focusId = id; render(); el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); }
     if (el) requestAnimationFrame(() => PZ.centerOn(el));
@@ -1644,11 +1733,19 @@ PZ.st.addEventListener("click", e => {
 PZ.st.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("g[role=button]")){ e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click", { bubbles:true })); } });
 const setView = v => { S.view = v; store.set("shajara.view", v); render(true); if (S.selId && v !== "list") locate(S.selId); };
 $("vTree").onclick = () => setView("tree");
+$("pageMode").onclick = () => { S.paged = !S.paged; store.set("shajara.paged", S.paged ? "1" : "0"); if (S.paged){ const pi = S.selId ? pageOfPerson(treePages(), S.selId) : -1; S.page = pi >= 0 ? pi : 0; } render(true); };
+$("pgPrev").onclick = () => { S.page = Math.max(0, (S.page || 0) - 1); render(true); };
+$("pgNext").onclick = () => { S.page = (S.page || 0) + 1; render(true); };
+document.addEventListener("keydown", e => {
+  if (!S.paged || S.view !== "tree" || !$("modal").hidden || /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || "")) return;
+  if (e.key === "ArrowLeft" && S.page > 0){ S.page--; render(true); }
+  if (e.key === "ArrowRight" && S.page < (S._pages || []).length - 1){ S.page++; render(true); }
+});
 $("vFan").onclick = () => { if (S.selId) S.focusId = S.selId; setView("fan"); };
 $("vList").onclick = () => setView("list");
 $("scLat").onclick = () => { S.script = "lat"; store.set("shajara.script", "lat"); render(); };
 $("scCyr").onclick = () => { S.script = "cyr"; store.set("shajara.script", "cyr"); render(); };
-$("pick").onchange = e => { if (S.view === "tree") S.rootId = e.target.value; else S.focusId = e.target.value; render(true); };
+$("pick").onchange = e => { if (S.view === "tree"){ S.rootId = e.target.value; S.page = 0; } else S.focusId = e.target.value; render(true); };
 $("addBtn").onclick = () => openForm(null, {});
 $("exportBtn").onclick = () => openExport("poster");
 $("todayBtn").onclick = () => setView("list");
@@ -1666,46 +1763,17 @@ document.addEventListener("click", e => { if (!e.target.closest(".search")) res.
 document.addEventListener("keydown", e => { if (e.key === "Escape"){ if (!$("modal").hidden){ $("modal").hidden = true; $("modal").innerHTML = ""; } else if (S.selId){ S.selId = null; render(); } } });
 window.addEventListener("resize", () => { clearTimeout(window._rz); window._rz = setTimeout(() => { if (S.view !== "list") PZ.fit(); }, 150); });
 
-/* ================= Painted scene (tree of life behind the cards) ================= */
-function drawScene(){
-  const cv = $("treeBg"); if (!cv) return;
-  const box = cv.parentElement.getBoundingClientRect(), w = Math.max(1, box.width), h = Math.max(1, box.height);
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-  const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
-  const cs = getComputedStyle(document.documentElement), col = k => cs.getPropertyValue(k).trim();
-  let seed = 20251021; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
-  const bark = col("--bark"), leaves = [col("--leaf1"), col("--leaf2"), col("--leaf3")], tips = [];
-  const S0 = Math.min(w, h * 1.2);
-  function branch(x, y, len, ang, wd, d){
-    const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
-    c.strokeStyle = bark; c.lineWidth = wd; c.lineCap = "round"; c.beginPath(); c.moveTo(x, y);
-    c.quadraticCurveTo((x + x2) / 2 + (rnd() - .5) * len * .25, (y + y2) / 2 + (rnd() - .5) * len * .2, x2, y2); c.stroke();
-    if (d <= 0 || len < 8){ tips.push([x2, y2]); return; }
-    const n = 2 + (d < 6 && rnd() < .35 ? 1 : 0);
-    for (let i = 0; i < n; i++) branch(x2, y2, len * (0.7 + rnd() * 0.12), ang + (i - (n - 1) / 2) * (0.5 + rnd() * 0.3) + (rnd() - .5) * .2, wd * 0.68, d - 1);
-    if (d < 4) tips.push([x2, y2]);
-  }
-  branch(w / 2, h + 12, S0 * 0.22, -Math.PI / 2, S0 * 0.042, 7);
-  for (const [x, y] of tips) for (let k = 0; k < 5; k++){
-    c.globalAlpha = 0.25 + rnd() * 0.35; c.fillStyle = leaves[(rnd() * 3) | 0];
-    const r = 5 + rnd() * S0 * 0.022; c.beginPath(); c.ellipse(x + (rnd() - .5) * 30, y + (rnd() - .5) * 26, r, r * 0.72, rnd() * 3, 0, Math.PI * 2); c.fill();
-  }
-  c.globalAlpha = 1;
-}
-(() => {
-  const host = $("treeBg")?.parentElement; if (!host) return;
-  let tmr; const later = () => { clearTimeout(tmr); tmr = setTimeout(drawScene, 120); };
-  try { new ResizeObserver(later).observe(host); } catch(e){ window.addEventListener("resize", later); }
-  try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", later); } catch(e){}
-  try { new MutationObserver(later).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] }); } catch(e){}
-  drawScene();
-})();
+/* ================= Phone menu ================= */
+function setMenu(open){ const app = document.querySelector(".app"); app.classList.toggle("menu-open", open); $("scrim").hidden = !open; $("menuBtn").setAttribute("aria-expanded", open); }
+$("menuBtn").onclick = () => setMenu(!document.querySelector(".app").classList.contains("menu-open"));
+$("scrim").onclick = () => setMenu(false);
+["vTree","vFan","vList","exportBtn","todayBtn","meChip"].forEach(id => $(id).addEventListener("click", () => setMenu(false)));
 document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")){ e.preventDefault(); $("q").focus(); } });
 
 /* ================= Boot ================= */
 S.script = store.get("shajara.script") === "cyr" ? "cyr" : "lat";
 S.view = ["fan","list"].includes(store.get("shajara.view")) ? store.get("shajara.view") : "tree";
+S.paged = store.get("shajara.paged") ? store.get("shajara.paged") === "1" : window.innerWidth < 700; S.page = 0;
 renderChrome();
 (async () => {
   const claude = window.claude;
