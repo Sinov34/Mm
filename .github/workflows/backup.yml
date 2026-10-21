@@ -1,0 +1,31 @@
+# Har yakshanba saytdagi shajarani to'liq zaxiralab, shu repozitoriyga (backup/) yozib qo'yadi.
+# Kerakli GitHub Secrets: SITE_URL (masalan https://shajara.pages.dev) va BACKUP_TOKEN (Cloudflare'dagi bilan bir xil).
+name: Haftalik zaxira
+on:
+  schedule:
+    - cron: "17 3 * * 0"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zaxirani olish
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          BACKUP_TOKEN: ${{ secrets.BACKUP_TOKEN }}
+        run: |
+          test -n "$SITE_URL" && test -n "$BACKUP_TOKEN" || { echo "SITE_URL yoki BACKUP_TOKEN sozlanmagan"; exit 1; }
+          mkdir -p backup
+          curl -fsS -H "Authorization: Bearer $BACKUP_TOKEN" "${SITE_URL%/}/api/backup" -o backup/new.json
+          python3 -c "import json;d=json.load(open('backup/new.json'));assert d['app']=='shajara';d.pop('exportedAt',None);json.dump(d,open('backup/shajara-zaxira.json','w'),ensure_ascii=False,indent=1)"
+          rm backup/new.json
+      - name: Saqlash
+        run: |
+          git config user.name "shajara-backup"
+          git config user.email "shajara-backup@users.noreply.github.com"
+          git add backup/shajara-zaxira.json
+          git diff --cached --quiet || git commit -m "Haftalik zaxira $(date -u +%F)"
+          git push

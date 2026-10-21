@@ -1,0 +1,11 @@
+{
+  "name": "shajara",
+  "private": true,
+  "scripts": {
+    "build": "python3 build.py",
+    "dev": "wrangler pages dev public --d1 DB=shajara --binding ADMIN_PASSWORD=sinov123"
+  },
+  "devDependencies": {
+    "wrangler": "4.42.0"
+  }
+}
