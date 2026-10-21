@@ -9,8 +9,8 @@ def rep(s, a, b):
     return s.replace(a, b, 1)
 
 # 1) login / logout button in the header
-src = rep(src, '<button class="hbtn gold" id="exportBtn" hidden>',
-  '<button class="hbtn" id="authBtn" hidden></button>\n    <button class="hbtn gold" id="exportBtn" hidden>')
+src = rep(src, '<button class="me-chip" id="meChip" hidden></button>',
+  '<button class="me-chip" id="meChip" hidden></button>\n      <button class="side-btn" id="authBtn" hidden></button>')
 
 # 2) auth UI code, inserted before boot
 auth_js = r'''
