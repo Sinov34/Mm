@@ -9,7 +9,7 @@
 @font-face{font-family:"Golos Text";font-weight:600;font-display:swap;src:url("fonts/golos-600.woff") format("woff")}
 /* Layout: an ivory side panel (brand, sections, stats, user) beside one painted scene — a Samarkand landscape with a living tree — on which the family cards float; floating toolbar on top, detail panel on the right. */
 :root{
-  --paper:#EEE9DD; --panel:#FBF8F1; --card:#FFFDF8; --sunk:#F4EFE3; --ink:#1E2A26; --muted:#6B7068; --line:#E2D9C6;
+  --paper:#EEE9DD; --panel:#FBF8F1; --card:#FFFDF8; --surface:var(--card); --sunk:#F4EFE3; --ink:#1E2A26; --muted:#6B7068; --line:#E2D9C6;
   --green:#1F4B3B; --green-ink:#F6F1E4; --green-soft:#E3ECE4; --gold:#9C7128; --gold-btn:#A57A30; --gold-soft:#F3E8CF;
   --man:#5E86AE; --man-soft:#E6EEF6; --woman:#C47C86; --woman-soft:#F7E6E6; --branch:#B8954F;
   --lapis:#2B5A86; --lapis-soft:#E2EAF3; --teal:#2F7A6E; --teal-soft:#DDEEEA; --danger:#B3261E;
@@ -85,7 +85,7 @@ button{cursor:pointer}
 .canvas{position:relative;min-height:0;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,var(--sky1),var(--sky2) 70%);box-shadow:var(--shadow-s)}
 .scene{position:absolute;inset:0;pointer-events:none;background:url("img/tree.jpg") center 62%/cover no-repeat;filter:var(--scene-filter)}
 .scene::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 30%,transparent),color-mix(in srgb,var(--panel) 6%,transparent) 40%,color-mix(in srgb,var(--panel) 22%,transparent))}
-.tbtn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;font-weight:500;font-size:14.5px;border:1px solid var(--line)}
+.tbtn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:none;padding:9px 14px;font-weight:500;font-size:14.5px;border:1px solid var(--line)}
 .tbtn[aria-pressed="true"]{background:var(--green);color:var(--green-ink);border-color:var(--green)}
 .pager{position:absolute;z-index:20;left:50%;transform:translateX(-50%);bottom:16px;display:flex;align-items:center;gap:6px;padding:5px;max-width:calc(100% - 24px);box-sizing:border-box}
 .pager button{width:44px;height:44px;border:0;border-radius:11px;background:var(--green);color:var(--green-ink);display:grid;place-items:center;flex:none}
@@ -99,10 +99,10 @@ button{cursor:pointer}
 .viewport{position:absolute;inset:0;touch-action:none;cursor:grab}
 .viewport.dragging{cursor:grabbing}
 .stage{position:absolute;left:0;top:0;transform-origin:0 0}
-.topbar{position:absolute;z-index:20;top:12px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;pointer-events:none}
+.topbar{position:absolute;z-index:20;top:12px;left:12px;right:12px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;pointer-events:none}
 .topbar>*{pointer-events:auto}
 .pill{background:color-mix(in srgb,var(--card) 94%,transparent);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-s);backdrop-filter:blur(6px)}
-.search{position:relative;flex:0 1 270px;min-width:0}
+.search{position:relative;flex:0 1 270px;min-width:150px}
 .search input{width:100%;border:0;background:transparent;padding:10px 64px 10px 40px;box-sizing:border-box;font-size:15px;border-radius:14px}
 .search>svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
 .kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:1px 7px;background:var(--sunk);pointer-events:none}
@@ -122,6 +122,9 @@ button{cursor:pointer}
 .zoom button:hover{background:var(--sunk)}
 .zoom output{min-width:50px;text-align:center;font-size:14.5px;font-variant-numeric:tabular-nums;font-weight:500}
 .tb-spacer{flex:1}
+#addBtn{flex:none}
+@media (max-width:1520px){ .field-inline>span{display:none} .tbtn span{display:none} .tbtn{padding:9px 11px} }
+@media (max-width:1180px) and (min-width:901px){ #addBtn span{display:none} #addBtn{padding:9px 12px} .zoom output{display:none} }
 .btn{border:1px solid var(--line);background:var(--card);border-radius:13px;padding:9px 16px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;font-size:15px}
 .btn:hover{border-color:var(--gold);color:var(--gold)}
 .btn:disabled{opacity:.55;cursor:default}
@@ -154,7 +157,7 @@ button{cursor:pointer}
 .card::before{content:"";position:absolute;inset:4px;border:1px solid color-mix(in srgb,var(--man) 30%,transparent);border-radius:15px;pointer-events:none}
 .card.f::before{border-color:color-mix(in srgb,var(--woman) 30%,transparent)}
 .card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-.card.sel{box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 55%,transparent),var(--shadow)}
+.card.sel{border-color:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 45%,transparent),var(--shadow);transform:translateY(-2px)}
 .card.me{box-shadow:0 0 0 4px var(--gold),var(--shadow-s)}
 .card.in-law{background:color-mix(in srgb,var(--card) 88%,var(--sunk))}
 .card .av{width:88px;height:88px;font-size:28px;margin-bottom:6px}
@@ -177,7 +180,7 @@ button{cursor:pointer}
 .fan .sec path{stroke:var(--card);stroke-width:2;transition:filter .15s}
 .fan .sec:hover path{filter:brightness(.95)}
 .fan .sec.sel path{stroke:var(--gold);stroke-width:3.5}
-.fan .empty path{fill:color-mix(in srgb,var(--card) 70%,transparent);stroke:var(--line);stroke-dasharray:3 4;stroke-width:1}
+.fan .empty path{fill:color-mix(in srgb,var(--card) 28%,transparent);stroke:var(--line);stroke-dasharray:3 4;stroke-width:1}
 .fan .add{cursor:pointer}
 .fan .add:hover path{fill:var(--gold-soft)}
 .fan .plus{fill:var(--muted);font-size:20px}
@@ -185,7 +188,8 @@ button{cursor:pointer}
 
 /* ---------- List view ---------- */
 .listview{position:absolute;inset:0;overflow:auto;padding:76px clamp(14px,3vw,30px) 30px;z-index:2;background:color-mix(in srgb,var(--paper) 80%,transparent);backdrop-filter:blur(2px)}
-.lv-grid{display:grid;gap:26px;max-width:1180px;margin:0 auto}
+.lv-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;max-width:1180px;margin:0 auto}
+.lv-grid>*{min-width:0}
 .lv-h{font-family:var(--serif);font-size:27px;font-weight:700;margin:0 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .lv-h small{font-family:var(--sans);font-size:14px;color:var(--muted);font-weight:400}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
@@ -311,7 +315,7 @@ tbody tr:hover td{background:var(--sunk)}
 .steps{margin:0;padding-left:22px;display:grid;gap:8px;line-height:1.6;max-width:72ch}
 .steps b{font-weight:600}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap}
-.pill-row label{border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px;background:var(--card)}
+.pill-row label{white-space:nowrap;border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-size:15px;background:var(--card)}
 .pill-row label:has(input:checked){border-color:var(--green);background:var(--green-soft);color:var(--green)}
 .pill-row input{accent-color:var(--green)}
 .progress{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
@@ -346,7 +350,11 @@ tbody tr:hover td{background:var(--sunk)}
   .scrim[hidden]{display:none}
   .orn{display:none}
   .side-foot{margin-top:auto}
-  .topbar{top:8px;left:8px;right:8px;gap:6px}
+  .topbar{top:8px;left:8px;right:8px;gap:6px;flex-wrap:wrap}
+  .app[data-view="list"] .search{flex:1 1 0}
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .stat{padding:10px 12px}
+  .stat b{font-size:30px}
   .search{flex:1 1 100%}
   .search input{padding-block:9px}
   .kbd{display:none}
@@ -558,7 +566,7 @@ const t = (k, v) => { let s = dn(L[k] || k); if (v) for (const [a,b] of Object.e
 const tRaw = k => { const s = L[k] || k; return S.script === "cyr" ? s.replace(/(^|>)([^<]+)/g, (m, a, b) => a + (/\.com/.test(b) ? b : toCyr(b))) : prettyLat(s); };
 
 Object.assign(L, { viewTree:"Shajara daraxti", viewFan:"Doira ko'rinishi", viewList:"Oila a'zolari", genCount:"Avlodlar soni",
-  add:"Yangi a'zo qo'shish", search:"Oila a'zolarini qidirish…", tabInfo:"Ma'lumot", tabRel:"Qarindoshlar", inlaws:"Qayin tomoni",
+  add:"Yangi a'zo qo'shish", search:"Qidirish…", tabInfo:"Ma'lumot", tabRel:"Qarindoshlar", inlaws:"Qayin tomoni",
   bioT:"Qisqacha ma'lumot", meRole:"Shajarada siz", meNone:"Kartochkada «Bu — men»", pplOf:"{n} kishi", noRel:"Qarindoshlar hali kiritilmagan.",
   todayDates:"Bugungi sanalar", root:"Avlod boshi", pagedOn:"Shoxlar bo'yicha", pagedOff:"Butun daraxt", branchOf:"{n} shoxi", pageOf:"{i} / {n}", menu:"Menyu" });
 const MONTHS = ["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
@@ -833,7 +841,8 @@ const PZ = { x:0, y:0, k:1, vp:$("vp"), st:$("stage"), dragged:false,
   apply(){ this.st.style.transform = `translate(${this.x}px,${this.y}px) scale(${this.k})`; const zp = document.getElementById("zPct"); if (zp) zp.textContent = Math.round(this.k * 100) + "%"; },
   zoomAt(f, cx, cy){ const k = Math.min(2.5, Math.max(0.08, this.k * f)); const r = k / this.k;
     this.x = cx - (cx - this.x) * r; this.y = cy - (cy - this.y) * r; this.k = k; this.apply(); },
-  fit(all){ const w = this.st.offsetWidth, h = this.st.offsetHeight, vw = this.vp.clientWidth, vh = this.vp.clientHeight; if (!w || !h || !vw) return;
+  side(){ const sh = document.getElementById("sheet"); return sh && !sh.hidden && window.innerWidth > 900 ? sh.offsetWidth + 24 : 0; },
+  fit(all){ const w = this.st.offsetWidth, h = this.st.offsetHeight, vh = this.vp.clientHeight, vw = this.vp.clientWidth - this.side(); if (!w || !h || vw <= 0) return;
     const minK = all ? 0.05 : (vw < 600 ? 0.62 : 0.78);
     this.k = Math.max(Math.min(vw / w, vh / h, 1), Math.min(minK, 1));
     if (w * this.k <= vw) this.x = (vw - w * this.k) / 2;
@@ -842,7 +851,7 @@ const PZ = { x:0, y:0, k:1, vp:$("vp"), st:$("stage"), dragged:false,
   centerOn(el){ if (!el) return; const sr = this.st.getBoundingClientRect(), er = el.getBoundingClientRect();
     const cx = (er.left + er.width/2 - sr.left) / this.k, cy = (er.top + er.height/2 - sr.top) / this.k;
     if (this.k < 0.65) this.k = 0.85;
-    this.x = this.vp.clientWidth/2 - cx * this.k; this.y = this.vp.clientHeight/2 - cy * this.k; this.apply(); }
+    this.x = (this.vp.clientWidth - this.side())/2 - cx * this.k; this.y = this.vp.clientHeight/2 - cy * this.k; this.apply(); }
 };
 (() => {
   const pts = new Map(); let start = null;
@@ -1101,6 +1110,7 @@ function renderState(){
 }
 function render(fit){
   S.relCache = null;
+  document.querySelector(".app")?.setAttribute("data-view", S.view);
   renderChrome(); renderState();
   $("vp").hidden = S.view === "list"; $("list").hidden = S.view !== "list";
   if (S.view === "tree") renderTree(); else if (S.view === "fan") renderFan(); else renderList();
@@ -1205,14 +1215,21 @@ function renderSheet(){
     try { await removePerson(p.id); S.selId = null; toast(t("deleted")); render(); } catch(e){ toast(t("errSave")); del.disabled = false; }
   };
 }
-function select(id, locateIt){ S.selId = id; if (S.view === "list") renderSheet(); else render(); if (locateIt && S.view !== "list") locate(id); }
+function centerId(id){ const e = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); if (e) PZ.centerOn(e); }
+function select(id, locateIt){
+  const wasOpen = !$("sheet").hidden;
+  S.selId = id; if (S.view === "list") renderSheet(); else render();
+  if (S.view === "list") return;
+  if (locateIt) locate(id);
+  else if (!wasOpen && window.innerWidth > 900){ const el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); if (el){ const r = el.getBoundingClientRect(), vr = PZ.vp.getBoundingClientRect(); if (r.right > vr.right - PZ.side()) requestAnimationFrame(() => centerId(id)); } }
+}
 function locate(id){
   requestAnimationFrame(() => {
     let el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`);
     if (!el && S.view === "tree" && S.paged){ const pi = pageOfPerson(S._pages || [], id); if (pi >= 0){ S.page = pi; render(true); el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); } }
     if (!el && S.view === "tree"){ S.rootId = topOf(id); render(); el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); }
     if (!el && S.view === "fan"){ S.focusId = id; render(); el = PZ.st.querySelector(`[data-id="${CSS.escape(id)}"]`); }
-    if (el) requestAnimationFrame(() => PZ.centerOn(el));
+    if (el) requestAnimationFrame(() => centerId(id));
   });
 }
 
@@ -1675,6 +1692,7 @@ function openExport(tab = "poster"){
     finally { $("pxMake").disabled = $("pxSave").disabled = false; $("pxProg").hidden = true; }
   };
   $("pxMake").onclick = make;
+  if (tab === "poster") setTimeout(make, 60);
   $("pxSave").onclick = async () => { const r = await make(); if (!r) return;
     const slug = (norm(r.opt.title).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "shajara");
     await saveFile(`${slug}-${r.opt.paper === "auto" ? "plakat" : r.opt.paper}.svg`, r.blob); };
