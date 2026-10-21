@@ -1,8 +1,8 @@
-// Shajara API — Cloudflare Pages Functions + D1.
-// Kerakli sozlamalar (Cloudflare Pages → Settings):
-//   • D1 binding:        DB  → "shajara" bazasi
+// Shajara API — Cloudflare Worker + D1.
+// Kerakli sozlamalar (Cloudflare → Worker → Settings):
+//   • D1 binding:        DB  (wrangler.jsonc da, deployda avtomatik yaratiladi)
 //   • Secret (maxfiy):   ADMIN_PASSWORD → tahrirlash paroli
-import seed from "../../lib/seed.js";
+import seed from "../lib/seed.js";
 
 const ID_RE = /^[A-Za-z0-9_\-.~:@+]{1,200}$/;
 const MAX_DOC = 256 * 1024;
